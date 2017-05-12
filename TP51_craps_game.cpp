@@ -62,7 +62,7 @@ using namespace std;
 void greeting();
 int rollDice();
 void repeat (char &);
-void displayWinLoss(int, const int);
+void displayWinLoss(const int, const int);
 
 // ---- Main ----
 int main()
@@ -154,7 +154,7 @@ void greeting()
 }
 
 // displays # of games won and win loss ratio
-void displayWinLoss(int winCount, const int gameCount)
+void displayWinLoss(const int winCount, const int gameCount)
 {
     cout << setprecision(3) << fixed;
     cout << "\nYou won " << winCount << " out of " << gameCount << " games\n";
