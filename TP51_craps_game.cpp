@@ -10,7 +10,7 @@
 //  Seed based on system time
 //  Display greeting
 //  Do-while loop
-//      set point to false
+//      set hasPoint to false
 //      set rollCount to 0
 //      increment totalGames
 //      display totalGames
@@ -24,15 +24,11 @@
 //          display 'You Lose'
 //      End else if
 //      Else
-//          assign diceSum to ptTomatch
-//          display ptToMatch (i.e. the established point)
-//          set point to true
+//          assign diceSum to point
+//          display point (i.e. the established point)
+//          set hasPoint to true
 //      End else
-//      If point is true
-//          let user decide if he/she wants to continue to the Point Round
-//          uppercase the user input
-//      End if
-//      If point is true and choice is equal to 'Y'
+//      If hasPoint is true
 //          display "Point Round has begun!"
 //          Do-while loop
 //              assign rollDice return value to ptDiceSum
@@ -42,15 +38,15 @@
 //              If ptDiceSum is equal to 7
 //                  display "You Lose"
 //              End if
-//              Else if ptDiceSum is equal to ptToMatch
+//              Else if ptDiceSum is equal to point
 //                  display "You Win"
 //                  increment wins
 //              End else if
-//          End do-while (if ptDiceSum is not equal to ptToMatch and not equal to 7)
+//          End do-while (if ptDiceSum is not equal to point and not equal to 7)
 //      End if
 //      ask user if they wish to play again
 //      uppercase user input
-//  End do-while (if finalChoice is equal to 'Y')
+//  End do-while (if choice is equal to 'Y')
 //  display wins and win loss ratio
 //  display "Thanks for playing"
 
@@ -66,7 +62,6 @@ using namespace std;
 void greeting();
 int rollDice();
 void repeat (char &);
-void toPtRound(char &);
 void displayWinLoss(int, const int);
 
 // ---- Main ----
@@ -74,22 +69,21 @@ int main()
 {
     int diceSum,   // sum of dice in intial round
         ptDiceSum, // sum of dice during *point round*
-        ptToMatch, // the established point
+        point, // the established point
         rollCount,     // keep track of rolls during *point round*
         totalGames = 0, // keep track of # of games
         wins = 0;   // keep track of wins
-    bool point;    // to be used to determine whether a point has been established
-    char finalChoice, // user choice to repeat game
-        choice;    // user choice to continue to *point round*
+    bool hasPoint;    // to be used to determine whether a point has been established
+    char choice, // to repeat game
     
     srand(time(NULL)); // seeding
     
     greeting();
     
-    // game loop
+    // create game loop
     do
     {
-        point = false;
+        hasPoint = false;
         rollCount = 0;
         totalGames++;
         
@@ -99,7 +93,7 @@ int main()
         
         diceSum = rollDice();
         
-        cout << " You rolled: " << diceSum << endl;
+        cout << "\n\t\tRollTotal = " << diceSum << endl;
         
         if (diceSum == 7 || diceSum == 11) // win on first roll
         {
@@ -112,44 +106,37 @@ int main()
 
         else
         {
-            ptToMatch = diceSum;
-            cout << "The point has been established as: " << ptToMatch << endl;
-            point = true; // point has been established
+            point = diceSum;
+            cout << "The point has been established as: " << point << endl;
+            hasPoint = true; // point has been established
         }
-        
-        // if the point has been established
-        if (point)
-        {
-            //// MAY REMOVE THIS USER INPUT
-            toPtRound(choice);    // user decides to continue to Point Round or not
-        }
-        
+    
         // if the point has been established and user wishes to continue
-        if (point && choice == 'Y')
+        if (hasPoint)
         {
             cout << "------------------------------\n";
             cout << "The Point Round has now begun!\n";
             cout << "------------------------------\n";
             do
             {
-                ptDiceSum = rollDice();
                 rollCount++; // increment for each roll
-                cout << "Roll " << rollCount << ": Rolling...\n";
-                cout << " You rolled: " << ptDiceSum << endl;
+                cout << "Roll " << rollCount << ": ";
+                ptDiceSum = rollDice();
+                cout << "\n\t\tRollTotal = " << ptDiceSum << endl;
                 
                 if (ptDiceSum == 7) // roll equal to 7
                     cout << "You Lose\n";
           
-                else if (ptDiceSum == ptToMatch) // roll is equal to established point
+                else if (ptDiceSum == point) // roll is equal to established point
                 {
                     cout << "You Win!\n";
                     wins++;
                 }
                 
-            } while(ptDiceSum != ptToMatch && ptDiceSum != 7);
+            } while(ptDiceSum != point && ptDiceSum != 7);
         }
-        repeat(finalChoice);
-    } while(finalChoice == 'Y'); // end game loop
+        repeat(choice);
+    } while(choice == 'Y'); // end game loop
     
     displayWinLoss(wins, totalGames);
     cout << "\nThanks for playing!\n";
@@ -182,7 +169,7 @@ int rollDice()
     die1 = rand() % 6 + 1;
     die2 = rand() % 6 + 1;
     
-    cout << "You rolled a " << die1 << " and " << die2;
+    cout << "You rolled a " << die1 << " and a " << die2;
     // any % from 2-12
     sum = die1 + die2;
     return sum;
@@ -196,11 +183,3 @@ void repeat (char &finalC)
     finalC = toupper(finalC);
 }
 
-// uppercases user input
-void toPtRound(char &c)
-{
-    cout << "Do you wish to continue to the Point Round? (y/n): ";
-    cout << "Quitting now will be counted as a loss" << endl;
-    cin >> c;
-    c = toupper(c);
-}
